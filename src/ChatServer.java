@@ -69,4 +69,3 @@ public class ChatServer {
         chat.principal();
     }
 }
-

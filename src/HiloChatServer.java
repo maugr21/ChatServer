@@ -28,10 +28,17 @@ public class HiloChatServer implements Runnable {
         if (tokens[0].equals("p")) { // Es un mensaje privado
             String recipient = tokens[1];
             String privateMsg = tokens[2];
+            String sender = tokens[3]; // El nombre del remitente
             Socket recipientSocket = usuarios.get(recipient);
             if (recipientSocket != null) {
-                DataOutputStream out = new DataOutputStream(recipientSocket.getOutputStream());
-                out.writeUTF("Mensaje privado de " + recipient + ": " + privateMsg);
+                try {
+                    // Encriptar el mensaje privado antes de enviarlo
+                    String encryptedMsg = AESUtil.encrypt(privateMsg);
+                    DataOutputStream out = new DataOutputStream(recipientSocket.getOutputStream());
+                    out.writeUTF("Mensaje privado de " + sender + ": " + encryptedMsg);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         } else {
             for (Socket soc : vector) {
